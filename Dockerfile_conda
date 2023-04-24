@@ -1,0 +1,21 @@
+# base image
+FROM continuumio/miniconda3
+
+
+# copy the environment.yml into the image
+COPY environment.yml environment.yml
+
+# restore the conda environment from the environment.yml
+RUN conda env create -f environment.yml
+
+# set working directory
+WORKDIR /app
+
+# copy script into image
+ADD app /app
+
+# Initialize conda in bash config fiiles:
+SHELL ["conda", "run", "-n", "myenv", "/bin/bash", "-c"]
+
+# run script when container starts
+ENTRYPOINT ["conda", "run", "--no-capture-output", "-n", "myenv", "python3", "main.py"]
