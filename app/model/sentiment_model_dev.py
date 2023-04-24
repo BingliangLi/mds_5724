@@ -37,6 +37,8 @@ if __name__ == "__main__":
     # find the best parameters for both the feature extraction and the
     # classifier
     
+    print('Performing grid search...')
+    
     grid_search = GridSearchCV(pipeline, parameters, scoring='f1', n_jobs=-1, verbose=1)
     df = pd.read_excel('./data/Task-2/train.xlsx')
     X= df.text
