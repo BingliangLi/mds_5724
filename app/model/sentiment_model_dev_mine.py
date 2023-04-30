@@ -9,6 +9,7 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.naive_bayes import MultinomialNB
+from lightgbm import LGBMClassifier
 import pandas as pd
 import joblib
 
@@ -18,7 +19,8 @@ import joblib
 pipeline = Pipeline([
     ('vect', CountVectorizer()),
     ('tfidf', TfidfTransformer()),
-    ('clf', MultinomialNB()),])
+    ('clf', LGBMClassifier()),
+])
 
 # uncommenting more parameters will give better exploring power but will
 # increase processing time in a combinatorial way
@@ -38,8 +40,8 @@ if __name__ == "__main__":
     
     print('Performing grid search...')
     
-    grid_search = GridSearchCV(pipeline, parameters, scoring='f1', n_jobs=-1, verbose=1)
-    df = pd.read_excel('./data/Task-2/trai.xlsx')
+    grid_search = GridSearchCV(pipeline, parameters, scoring='f1', n_jobs=-1, verbose=3)
+    df = pd.read_excel('./data/Task-2/train_processed.xlsx')
     X= df.text
     grid_search.fit(df.text,df.label)
     print("Performing grid search...")

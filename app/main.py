@@ -28,4 +28,4 @@ async def get_prediction(payload: Payload = None):
     return score
 
 if __name__ == '__main__':
-    uvicorn.run(app, port=5724, host='0.0.0.0')
+    uvicorn.run(app, port=5724, host='0.0.0.0'
