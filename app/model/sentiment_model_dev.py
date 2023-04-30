@@ -18,8 +18,7 @@ import joblib
 pipeline = Pipeline([
     ('vect', CountVectorizer()),
     ('tfidf', TfidfTransformer()),
-    ('clf', MultinomialNB()),
-])
+    ('clf', MultinomialNB()),])
 
 # uncommenting more parameters will give better exploring power but will
 # increase processing time in a combinatorial way
