@@ -41,7 +41,7 @@ if __name__ == "__main__":
     print('Performing grid search...')
     
     grid_search = GridSearchCV(pipeline, parameters, scoring='f1', n_jobs=-1, verbose=3)
-    df = pd.read_excel('./data/Task-2/train.xlsx')
+    df = pd.read_excel('./data/Task-2/train_processed.xlsx')
     X= df.text
     grid_search.fit(df.text,df.label)
     print("Performing grid search...")
