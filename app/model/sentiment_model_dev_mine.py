@@ -17,16 +17,16 @@ import joblib
 # Define a pipeline combining a text feature extractor with a simple
 # classifier
 pipeline = Pipeline([
-    ('vect', CountVectorizer()),
+    ('vect', CountVectorizer(ngram_range=(1, 1), max_df=0.5)),
     ('tfidf', TfidfTransformer()),
-    ('clf', LGBMClassifier()),
+    ('clf', MultinomialNB()),
 ])
 
 # uncommenting more parameters will give better exploring power but will
 # increase processing time in a combinatorial way
 parameters = {
-    'vect__max_df': (0.5, 0.75, 1.0),
-    'vect__ngram_range': ((1, 1), (1, 2), (1, 3)),
+    # 'vect__max_df': (0.5, 0.6),
+    # 'vect__ngram_range': ((1, 1)),
     'tfidf__use_idf': (True, False),
     'tfidf__norm': ('l1', 'l2'),
 }
@@ -40,8 +40,8 @@ if __name__ == "__main__":
     
     print('Performing grid search...')
     
-    grid_search = GridSearchCV(pipeline, parameters, scoring='f1', n_jobs=-1, verbose=3)
-    df = pd.read_excel('./data/Task-2/train_processed.xlsx')
+    grid_search = GridSearchCV(pipeline, parameters, scoring='f1', n_jobs=-1, verbose=1)
+    df = pd.read_excel('./data/Task-2/train_processed_stem.xlsx')
     X= df.text
     grid_search.fit(df.text,df.label)
     print("Performing grid search...")
