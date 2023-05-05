@@ -7,6 +7,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
+# f1_score
+from sklearn.metrics import f1_score
 # RidgeClassifier
 from sklearn.linear_model import RidgeClassifier # 85.9%
 import pandas as pd
@@ -401,7 +403,7 @@ parameters = {
     # RidgeClassifier parameters
     # 'clf__alpha': (0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5),
     # 'clf__solver': ('auto', 'sparse_cg',),
-    'clf__class_weight': ('balanced', None, {-1: 1.05, 1: 1}),
+    'clf__class_weight': ('balanced', None, {-1: 1, 1: 1.05}, {-1: 1, 1: 1.1}),
     # 'clf__fit_intercept': (True, False),
 }
 
@@ -414,7 +416,7 @@ if __name__ == "__main__":
     
     print('Performing grid search...')
     
-    grid_search = GridSearchCV(pipeline, parameters, scoring='f1', n_jobs=-1, verbose=1)
+    grid_search = GridSearchCV(pipeline, parameters, scoring='f1', n_jobs=-1, verbose=1, cv=5)
     df = pd.read_excel('./data/Task-2/train.xlsx')
     X= df.text
     grid_search.fit(df.text,df.label)
@@ -427,3 +429,13 @@ if __name__ == "__main__":
     for param_name in sorted(parameters.keys()):
         print("\t%s: %r" % (param_name, best_parameters[param_name]))
     joblib.dump(grid_search, "text_sentiment_model_v001.joblib")
+    
+    test = pd.read_csv('./data/Task-2/test.csv')
+    X_test = test.text
+    y_pred = grid_search.predict(X_test)
+    test_to_submit = pd.read_csv('./data/Task-2/test_to-submit.csv')
+    test_to_submit['label'] = y_pred
+    test_to_submit.to_csv('./data/Task-2/test_to-submit.csv', index=False)
+    test_to_submit.to_excel('./data/Task-2/test_to-submit.xlsx', index=False)
+    print('ratio of 1 in train: ', df.label.sum()/len(df))
+    print('ratio of 1 in test_to_submit: ', test_to_submit.label.sum()/len(test_to_submit))
